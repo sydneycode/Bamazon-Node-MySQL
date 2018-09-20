@@ -1,6 +1,7 @@
 // Require NPM packages necessary for data input and storage
 var inquirer = require("inquirer");
 var mysql = require("mysql");
+
 var cTable = require("console.table");
 
 var connection = mysql.createConnection({
@@ -24,7 +25,7 @@ function displayAllItems() {
                 console.log("Item ID: " + res[i].item_id + " || Product: " + res[i].product_name + 
                 " || Department: " + res[i].department_name + " || Price: " + res[i].price);
             }
-            console.table(res);
+            //console.table(res);
         }
         
     );
