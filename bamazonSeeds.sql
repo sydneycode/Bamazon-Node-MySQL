@@ -41,3 +41,6 @@ VALUES ("Electronics", 10000);
 
 INSERT INTO departments (department_name, over_head_costs)
 VALUES ("Pet Supplies", 20000);
+
+UPDATE products
+SET product_sales=100000;

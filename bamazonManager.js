@@ -138,7 +138,7 @@ function addNewProduct() {
             type: "input",
             message: "Enter the initial stock quantity of the new product: ",
             validate: function(value) {
-              if (parseFloat(value) % 1 === 0 && parseInt(value) > 0) {
+              if (parseFloat(value) % 1 === 0 && parseInt(value) >= 0) {
                 return true;
             }
               return false;
