@@ -21,10 +21,6 @@ function displayAllItems() {
     var query = "SELECT item_id, product_name, price FROM products";
     connection.query(query, function(err, res) {
             if (err) throw err;
-            // for (var i = 0; i < res.length; i++) {
-            //     console.log("Item ID: " + res[i].item_id + " || Product: " + res[i].product_name + 
-            //     " || Price: " + res[i].price);
-            // }
             console.table(res);
             promptCustomerToPlaceOrder();
         }
@@ -56,8 +52,6 @@ function promptCustomerToPlaceOrder() {
             }
         }
     ]).then(function(response) {
-        // console.log(response.idToBuy);
-        // console.log(response.quantityToBuy);
         checkProductQuantity(parseInt(response.idToBuy), parseInt(response.quantityToBuy));
     });
 }
@@ -69,9 +63,9 @@ function checkProductQuantity(id, quantity) {
             var quantityInStock = res[0].stock_quantity;
             if (quantity > quantityInStock) {
                 console.log("Insufficient quantity!  Please change the product or quantity before placing your order.");
+                promptCustomerToPlaceOrder();
             }
             else {
-                // Fulfill the customer's order
                 var quantityRemaining = quantityInStock - quantity;
                 updateDBWithRemainingQuantity(id, quantity, quantityRemaining); 
             }
@@ -93,7 +87,9 @@ function showCustomerCostOfPurchase(id, quantity) {
     connection.query(query, id, function(err, res) {
         if (err) throw err;
         var cost = res[0].price * quantity;
-        console.log("Order successfully placed!  Here is the total cost of your purchase: $" + cost);
+        console.log("Order successfully placed!  Here is the total cost of your purchase: $" + 
+            parseFloat(cost).toFixed(2));
+        promptCustomerToPlaceOrder();
         }
     );
 }
