@@ -42,7 +42,13 @@ function listSupervisorOptions() {
 }
 
 function viewProductsSalesByDept() {
-    var query = "SELECT item_id, product_name, price, stock_quantity FROM products";
+    var query = `SELECT d.department_id, p.department_name, 
+                d.over_head_costs, SUM(p.product_sales) AS product_sales, 
+                product_sales-d.over_head_costs AS total_profit
+                FROM products AS p 
+                JOIN departments AS d 
+                ON p.department_name = d.department_name 
+                GROUP BY department_name`;
     connection.query(query, function(err, res) {
             if (err) throw err;
             console.table(res);
