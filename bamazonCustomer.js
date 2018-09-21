@@ -81,7 +81,6 @@ function checkProductQuantity(id, quantity) {
 
 function updateDBWithRemainingQuantity(id, quantity, quantityRemaining) {
     var query = "UPDATE products SET stock_quantity=? WHERE item_id=?";
-    console.log(query);
     connection.query(query, [quantityRemaining, id], function(err, res) {
             if (err) throw err;
             showCustomerCostOfPurchase(id, quantity);
