@@ -87,8 +87,18 @@ function showCustomerCostOfPurchase(id, quantity) {
     connection.query(query, id, function(err, res) {
         if (err) throw err;
         var cost = res[0].price * quantity;
+        var costRounded = parseFloat(cost).toFixed(2);
         console.log("Order successfully placed!  Here is the total cost of your purchase: $" + 
-            parseFloat(cost).toFixed(2));
+            costRounded);
+        updateProductSales(id, costRounded);
+        }
+    );
+}
+
+function updateProductSales(id, amount) {
+    var query = "UPDATE products SET product_sales=product_sales+? WHERE item_id=?";
+    connection.query(query, [amount, id], function(err, res) {
+        if (err) throw err;
         promptCustomerToPlaceOrder();
         }
     );
