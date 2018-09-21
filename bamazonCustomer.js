@@ -18,15 +18,83 @@ connection.connect(function(err) {
 });
 
 function displayAllItems() {
-    var query = "SELECT item_id, product_name, department_name, price FROM products";
+    var query = "SELECT item_id, product_name, price FROM products";
     connection.query(query, function(err, res) {
             if (err) throw err;
-            for (var i = 0; i < res.length; i++) {
-                console.log("Item ID: " + res[i].item_id + " || Product: " + res[i].product_name + 
-                " || Department: " + res[i].department_name + " || Price: " + res[i].price);
-            }
-            //console.table(res);
+            // for (var i = 0; i < res.length; i++) {
+            //     console.log("Item ID: " + res[i].item_id + " || Product: " + res[i].product_name + 
+            //     " || Price: " + res[i].price);
+            // }
+            console.table(res);
+            promptCustomerToPlaceOrder();
         }
-        
+    );
+}
+
+function promptCustomerToPlaceOrder() {
+    inquirer.prompt([
+        {
+            name: "idToBuy",
+            type: "input",
+            message: "Enter the ID of the product you would like to buy: ",
+            validate: function(value) {
+            if (parseFloat(value) % 1 === 0 && parseInt(value) > 0) {
+                return true;
+            }
+            return false;
+            }
+        },
+        {
+            name: "quantityToBuy",
+            type: "input",
+            message: "Enter the number of units of the product you would like to buy: ",
+            validate: function(value) {
+              if (parseFloat(value) % 1 === 0 && parseInt(value) > 0) {
+                return true;
+            }
+              return false;
+            }
+        }
+    ]).then(function(response) {
+        // console.log(response.idToBuy);
+        // console.log(response.quantityToBuy);
+        checkProductQuantity(parseInt(response.idToBuy), parseInt(response.quantityToBuy));
+    });
+}
+
+function checkProductQuantity(id, quantity) {
+    var query = "SELECT stock_quantity FROM products WHERE item_id=?";
+    connection.query(query, id, function(err, res) {
+            if (err) throw err;
+            var quantityInStock = res[0].stock_quantity;
+            if (quantity > quantityInStock) {
+                console.log("Insufficient quantity!  Please change the product or quantity before placing your order.");
+            }
+            else {
+                // Fulfill the customer's order
+                var quantityRemaining = quantityInStock - quantity;
+                updateDBWithRemainingQuantity(id, quantity, quantityRemaining); 
+            }
+        }
+    );
+}
+
+function updateDBWithRemainingQuantity(id, quantity, quantityRemaining) {
+    var query = "UPDATE products SET stock_quantity=? WHERE item_id=?";
+    console.log(query);
+    connection.query(query, [quantityRemaining, id], function(err, res) {
+            if (err) throw err;
+            showCustomerCostOfPurchase(id, quantity);
+        }
+    );
+}
+
+function showCustomerCostOfPurchase(id, quantity) {
+    var query = "SELECT price FROM products WHERE item_id=?";
+    connection.query(query, id, function(err, res) {
+        if (err) throw err;
+        var cost = res[0].price * quantity;
+        console.log("Order successfully placed!  Here is the total cost of your purchase: $" + cost);
+        }
     );
 }
