@@ -29,3 +29,15 @@ VALUES ("Apple iPad", "Electronics", 499.99, 10);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("10-pack of Catnip Mice", "Pet Supplies", 8.81, 5);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Books", 30000);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Clothing", 60000);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Electronics", 10000);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Pet Supplies", 20000);
